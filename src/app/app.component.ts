@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
+import * as PostActions from "./ngrx/post.action";
+import { Post } from "./models/post.model";
 
 import { Store } from "@ngrx/store";
 import { Observable } from 'rxjs';
 
-
 interface AppState{
-  message : string
+  post : Post
 }
+
 
 @Component({
   selector: 'app-root',
@@ -14,16 +16,23 @@ interface AppState{
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  message$ : Observable<string>
 
-  constructor(private store :Store<AppState>){
-    this.message$ = this.store.select('message')
+  post! : Observable<Post>
+  text! : string
+  constructor(private store : Store<AppState>){
+    this.post = this.store.select('post')
   }
-  spanishMessage(){
-    this.store.dispatch({type :'SPANISH'})
+  editText(){
+    this.store.dispatch(new PostActions.EditText(this.text))
   }
-  frenchMessage(){
-    this.store.dispatch({type :'FRENCH'})
+  resetPost(){
+    this.store.dispatch(new PostActions.Reset())
+  }
+  upvote(){
+    this.store.dispatch(new PostActions.Upvote())
+  }
+  downvote(){
+    this.store.dispatch(new PostActions.Downvote())
   }
 
 }
